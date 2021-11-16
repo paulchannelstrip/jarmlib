@@ -109,81 +109,96 @@ let oscA = pF "oscA"
     verbdiff = pF "verbdiff"
     verb w t d h = verbgain 1 # verbwet w # verbtime t # verbdamp d # verbhp h
 
+-- utilities
+:{
+cLookup s f l = maybe (f 0) f (lookup s l)
+:}
+
 -- https://mutable-instruments.net/modules/braids/manual/
 :{
-braids_models = "csaw trisaw sawsq fold comb hardsync saw3 ring saw7 sawcomb toy zf vosm vowel harm fm pluk bowd blow bell drum kick cymb wtbl wmap wlin wt4 nois twnq clkn qpsk"
-braidsModelN "csaw"     = 0
-braidsModelN "trisaw"   = 1
-braidsModelN "sawsq"    = 2
-braidsModelN "fold"     = 3
-braidsModelN "comb"     = 4
-braidsModelN "hardsync" = 5
-braidsModelN "saw3"     = 6
-braidsModelN "ring"     = 7
-braidsModelN "saw7"     = 8
-braidsModelN "sawcomb"  = 9
-braidsModelN "toy"      = 10
-braidsModelN "zf"       = 11
-braidsModelN "vosm"     = 12
-braidsModelN "vowel"    = 13
-braidsModelN "harm"     = 14
-braidsModelN "fm"       = 15
-braidsModelN "pluk"     = 16
-braidsModelN "bowd"     = 17
-braidsModelN "blow"     = 18
-braidsModelN "bell"     = 19
-braidsModelN "drum"     = 20
-braidsModelN "kick"     = 21
-braidsModelN "cymb"     = 22
-braidsModelN "wtbl"     = 23
-braidsModelN "wmap"     = 24
-braidsModelN "wlin"     = 25
-braidsModelN "wt4"      = 26
-braidsModelN "nois"     = 27
-braidsModelN "twnq"     = 28
-braidsModelN "clkn"     = 29
-braidsModelN "qpsk"     = 30
-smodel = model . (braidsModelN <$>)
+braidsModels :: [([Char], Pattern Int)]
+braidsModels  = [ ("csaw"     , 0 )
+                , ("trisaw"   , 1 )
+                , ("sawsq"    , 2 )
+                , ("fold"     , 3 )
+                , ("comb"     , 4 )
+                , ("hardsync" , 5 )
+                , ("saw3"     , 6 )
+                , ("ring"     , 7 )
+                , ("saw7"     , 8 )
+                , ("sawcomb"  , 9 )
+                , ("toy"      , 10)
+                , ("zf"       , 11)
+                , ("vosm"     , 12)
+                , ("vowel"    , 13)
+                , ("harm"     , 14)
+                , ("fm"       , 15)
+                , ("pluk"     , 16)
+                , ("bowd"     , 17)
+                , ("blow"     , 18)
+                , ("bell"     , 19)
+                , ("drum"     , 20)
+                , ("kick"     , 21)
+                , ("cymb"     , 22)
+                , ("wtbl"     , 23)
+                , ("wmap"     , 24)
+                , ("wlin"     , 25)
+                , ("wt4"      , 26)
+                , ("nois"     , 27)
+                , ("twnq"     , 28)
+                , ("clkn"     , 29)
+                , ("qpsk"     , 30)
+                ]
+smodel :: [Char] -> ControlPattern
+-- smodel s = fromJust $ model <$> (lookup s braidsModels)
+-- smodel s = maybe (model 0) model (lookup s braidsModels)
+smodel s = cLookup s model braidsModels
 :}
 
 -- https://mutable-instruments.net/modules/plaits/manual/
 :{
-plaits_engines = "anaosc wshape fm formant harm wtable chords vowel gran noisef noisep modal anabd anasn anahh"
-plaitsEngineN "anaosc"  = 0
-plaitsEngineN "wshape"  = 1
-plaitsEngineN "fm"      = 2
-plaitsEngineN "formant" = 3
-plaitsEngineN "harm"    = 4
-plaitsEngineN "wtable"  = 5 
-plaitsEngineN "chords"  = 6
-plaitsEngineN "vowel"   = 7
-plaitsEngineN "gran"    = 8
-plaitsEngineN "noisef"  = 9
-plaitsEngineN "noisep"  = 10
-plaitsEngineN "modal"   = 11
-plaitsEngineN "anabd"   = 12
-plaitsEngineN "anasn"   = 13
-plaitsEngineN "anahh"   = 14
-sengine = engine . (plaitsEngineN <$>)
+plaitsEngines :: [([Char], Pattern Int)]
+plaitsEngines  = [ ("anaosc"  , 0 )
+                 , ("wshape"  , 1 )
+                 , ("fm"      , 2 )
+                 , ("formant" , 3 )
+                 , ("harm"    , 4 )
+                 , ("wtable"  , 5 ) 
+                 , ("chords"  , 6 )
+                 , ("vowel"   , 7 )
+                 , ("gran"    , 8 )
+                 , ("noisef"  , 9 )
+                 , ("noisep"  , 10)
+                 , ("modal"   , 11)
+                 , ("anabd"   , 12)
+                 , ("anasn"   , 13)
+                 , ("anahh"   , 14)
+                 ]
+sengine :: [Char] -> ControlPattern
+sengine s = cLookup s engine plaitsEngines
 :}
 
 -- https://mutable-instruments.net/modules/tides/manual/
 :{
-tides_modes = "shapes amps time freqs"
-modeN "shapes" = 0
-modeN "amps"   = 1
-modeN "times"  = 2
-modeN "freqs"  = 3
-smode = mode . (modeN <$>)
+tidesModes :: [([Char], Pattern Int)]
+tidesModes  = [ ("shapes" , 0)
+              , ("amps"   , 1)
+              , ("times"  , 2)
+              , ("freqs"  , 3)
+              ]
+smode :: [Char] -> ControlPattern
+smode s = cLookup s mode tidesModes
 :}
 
 :{
-rings_models = "res symp sympq mod fm rvb"
-ringsModelN "res"   = 0 -- MODAL_RESONATOR,
-ringsModelN "symp"  = 1 -- SYMPATHETIC_STRING,
-ringsModelN "sympq" = 4 -- SYMPATHETIC_STRING_QUANTIZED,
-ringsModelN "mod"   = 2 -- MODULATED/INHARMONIC_STRING,
-ringsModelN "fm"    = 3 -- 2-OP_FM_VOICE,
-ringsModelN "rvb"   = 5 -- STRING_AND_REVERB
-ringsSmodel = ringsmodel . (ringsModelN <$>)
+ringsModels :: [([Char], Pattern Double)]
+ringsModels  = [ ("res"   , 0) -- MODAL_RESONATOR,
+               , ("symp"  , 1) -- SYMPATHETIC_STRING,
+               , ("sympq" , 4) -- SYMPATHETIC_STRING_QUANTIZED,
+               , ("mod"   , 2) -- MODULATED/INHARMONIC_STRING,
+               , ("fm"    , 3) -- 2-OP_FM_VOICE,
+               , ("rvb"   , 5) -- STRING_AND_REVERB
+               ]
+sringsmodel :: [Char] -> ControlPattern
+sringsmodel s = cLookup s ringsmodel ringsModels
 :}
