@@ -150,8 +150,6 @@ braidsModels  = [ ("csaw"     , 0 )
                 , ("qpsk"     , 30)
                 ]
 smodel :: [Char] -> ControlPattern
--- smodel s = fromJust $ model <$> (lookup s braidsModels)
--- smodel s = maybe (model 0) model (lookup s braidsModels)
 smodel s = cLookup s model braidsModels
 :}
 
