@@ -111,7 +111,11 @@ let oscA = pF "oscA"
 
 -- utilities
 :{
+cLookup :: (Num t, Eq a) => a -> (t -> b) -> [(a, t)] -> b
 cLookup s f l = maybe (f 0) f (lookup s l)
+
+ppList :: [(b1, b2)] -> [b1]
+ppList l = map (\(s, _) -> s) l
 :}
 
 -- https://mutable-instruments.net/modules/braids/manual/
@@ -149,9 +153,10 @@ braidsModels  = [ ("csaw"     , 0 )
                 , ("clkn"     , 29)
                 , ("qpsk"     , 30)
                 ]
+
+braids_models = ppList braidsModels
+
 smodel :: [Char] -> ControlPattern
--- smodel s = fromJust $ model <$> (lookup s braidsModels)
--- smodel s = maybe (model 0) model (lookup s braidsModels)
 smodel s = cLookup s model braidsModels
 :}
 
@@ -174,6 +179,9 @@ plaitsEngines  = [ ("anaosc"  , 0 )
                  , ("anasn"   , 13)
                  , ("anahh"   , 14)
                  ]
+
+plaits_engines = ppList plaitsEngines
+
 sengine :: [Char] -> ControlPattern
 sengine s = cLookup s engine plaitsEngines
 :}
@@ -186,10 +194,14 @@ tidesModes  = [ ("shapes" , 0)
               , ("times"  , 2)
               , ("freqs"  , 3)
               ]
+
+tides_modes = ppList tidesModes
+
 smode :: [Char] -> ControlPattern
 smode s = cLookup s mode tidesModes
 :}
 
+-- https://mutable-instruments.net/modules/rings/manual/
 :{
 ringsModels :: [([Char], Pattern Double)]
 ringsModels  = [ ("res"   , 0) -- MODAL_RESONATOR,
@@ -199,6 +211,9 @@ ringsModels  = [ ("res"   , 0) -- MODAL_RESONATOR,
                , ("fm"    , 3) -- 2-OP_FM_VOICE,
                , ("rvb"   , 5) -- STRING_AND_REVERB
                ]
+
+rings_models = ppList ringsModels
+
 sringsmodel :: [Char] -> ControlPattern
 sringsmodel s = cLookup s ringsmodel ringsModels
 :}
