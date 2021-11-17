@@ -115,7 +115,7 @@ cLookup :: (Num t, Eq a) => a -> (t -> b) -> [(a, t)] -> b
 cLookup s f l = maybe (f 0) f (lookup s l)
 
 ppList :: [(b1, b2)] -> [b1]
-ppList l = map (\(s, _) -> s) l
+ppList l = map fst l
 :}
 
 -- https://mutable-instruments.net/modules/braids/manual/
